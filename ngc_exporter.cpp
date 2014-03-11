@@ -111,6 +111,8 @@ NGC_Exporter::export_layer( shared_ptr<Layer> layer, string of_name )
 	
 	
     cout << "exporting_layer";
+
+
 	// contours
  	BOOST_FOREACH( shared_ptr<icoords> path, layer->get_toolpaths() )
         {
