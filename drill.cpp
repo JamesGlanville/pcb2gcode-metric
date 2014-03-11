@@ -60,7 +60,7 @@ ExcellonProcessor::ExcellonProcessor( string drillfile, const ivalue_t board_wid
 
 
 void
-ExcellonProcessor::set_svg_exporter( shared_ptr<SVG_Exporter> svgexpo )
+ExcellonProcessor::set_svg_exporter(  boost::shared_ptr<SVG_Exporter> svgexpo )
 {
 	this->svgexpo = svgexpo;
 	bDoSVG = true;
@@ -74,7 +74,7 @@ ExcellonProcessor::add_header( string header )
 }
 
 void
-ExcellonProcessor::export_ngc( const string of_name, shared_ptr<Driller> driller, bool mirrored, bool mirror_absolute )
+ExcellonProcessor::export_ngc( const string of_name,  boost::shared_ptr<Driller> driller, bool mirrored, bool mirror_absolute )
 {
 	ivalue_t double_mirror_axis = mirror_absolute ? 0 : board_width;
 
@@ -84,8 +84,8 @@ ExcellonProcessor::export_ngc( const string of_name, shared_ptr<Driller> driller
 	// open output file
 	std::ofstream of; of.open( of_name.c_str() );
 
-	shared_ptr<const map<int,drillbit> > bits = get_bits();
-	shared_ptr<const map<int,icoords> > holes = get_holes();	
+	 boost::shared_ptr<const map<int,drillbit> > bits = get_bits();
+	 boost::shared_ptr<const map<int,icoords> > holes = get_holes();	
 
 	// write header to .ngc file
         BOOST_FOREACH( string s, header )
@@ -156,7 +156,7 @@ ExcellonProcessor::export_ngc( const string of_name, shared_ptr<Driller> driller
 	of.close();
 }
 
-void ExcellonProcessor::millhole(std::ofstream &of,float x, float y,  shared_ptr<Cutter> cutter,float holediameter)
+void ExcellonProcessor::millhole(std::ofstream &of,float x, float y,   boost::shared_ptr<Cutter> cutter,float holediameter)
 {
 	g_assert(cutter);
 	double cutdiameter=cutter->tool_diameter;
@@ -196,7 +196,7 @@ void ExcellonProcessor::millhole(std::ofstream &of,float x, float y,  shared_ptr
 
 //mill larger holes by using a smaller mill-head
 void 
-ExcellonProcessor::export_ngc( const string outputname,  shared_ptr<Cutter> target, bool mirrored, bool mirror_absolute )
+ExcellonProcessor::export_ngc( const string outputname,   boost::shared_ptr<Cutter> target, bool mirrored, bool mirror_absolute )
 {
 
 	g_assert( mirrored == true );
@@ -206,8 +206,8 @@ ExcellonProcessor::export_ngc( const string outputname,  shared_ptr<Cutter> targ
 	// open output file
 	std::ofstream of; of.open( outputname.c_str() );
 
-	shared_ptr<const map<int,drillbit> > bits = get_bits();
-	shared_ptr<const map<int,icoords> > holes = get_holes();	
+	boost::shared_ptr<const map<int,drillbit> > bits = get_bits();
+	boost::shared_ptr<const map<int,icoords> > holes = get_holes();	
 
 	// write header to .ngc file
         BOOST_FOREACH( string s, header )
@@ -263,7 +263,7 @@ ExcellonProcessor::export_ngc( const string outputname,  shared_ptr<Cutter> targ
 void
 ExcellonProcessor::parse_bits()
 {
-	bits = shared_ptr< map<int,drillbit> >( new map<int,drillbit>() );
+	bits =  boost::shared_ptr< map<int,drillbit> >( new map<int,drillbit>() );
 
 	for( gerbv_drill_list_t* currentDrill = project->file[0]->image->drill_stats->drill_list; currentDrill;
 	     currentDrill = currentDrill->next ) {
@@ -282,7 +282,7 @@ ExcellonProcessor::parse_holes()
 	if(!bits)
 		parse_bits();
 
-	holes = shared_ptr< map<int,icoords> >( new map<int,icoords>() );
+	holes =  boost::shared_ptr< map<int,icoords> >( new map<int,icoords>() );
 
 	for (gerbv_net_t* currentNet = project->file[0]->image->netlist; currentNet; currentNet = currentNet->next) {
 		if(currentNet->aperture != 0)
@@ -290,7 +290,7 @@ ExcellonProcessor::parse_holes()
 	}	
 }
 
-shared_ptr<const map<int,drillbit> >
+ boost::shared_ptr<const map<int,drillbit> >
 ExcellonProcessor::get_bits()
 {
 	if(!bits)
@@ -299,7 +299,7 @@ ExcellonProcessor::get_bits()
 	return bits;
 }
 
-shared_ptr<const map<int,icoords> >
+ boost::shared_ptr<const map<int,icoords> >
 ExcellonProcessor::get_holes()
 {
 	if(!holes)

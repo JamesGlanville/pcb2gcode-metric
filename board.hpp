@@ -58,7 +58,7 @@ class Board
 public:
 	Board( int dpi, bool fill_outline, double outline_width );
 
-	void prepareLayer( string layername, shared_ptr<LayerImporter> importer, shared_ptr<RoutingMill> manufacturer, bool topside, bool mirror_absolute );
+	void prepareLayer( string layername, boost::shared_ptr<LayerImporter> importer, boost::shared_ptr<RoutingMill> manufacturer, bool topside, bool mirror_absolute );
 	void set_margins( double margins ) { margin = margins; };
 
 	ivalue_t get_width();
@@ -70,8 +70,8 @@ public:
 	ivalue_t get_max_y() { return max_y; };	
 
 	vector< string > list_layers();
-	shared_ptr<Layer> get_layer( string layername );
-	vector< shared_ptr<icoords> > get_toolpath( string layername );
+	boost::shared_ptr<Layer> get_layer( string layername );
+	vector< boost::shared_ptr<icoords> > get_toolpath( string layername );
 
 	void createLayers();	// should be private
 
@@ -96,9 +96,9 @@ private:
 	 * prep_t tuples, whose signature must basically match the construction
 	 * signature of Layer.
 	 */
-	typedef tuple< shared_ptr<LayerImporter>, shared_ptr<RoutingMill>, bool, bool > prep_t;
+	typedef boost::tuple< boost::shared_ptr<LayerImporter>, boost::shared_ptr<RoutingMill>, bool, bool > prep_t;
 	map< string, prep_t > prepared_layers;
-	map< string, shared_ptr<Layer> >    layers;
+	map< string, boost::shared_ptr<Layer> >    layers;
 };
 
 #endif // BOARD_H

@@ -18,6 +18,7 @@
  * along with pcb2gcode.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <limits>
 #include "board.hpp"
 
 typedef pair<string, shared_ptr<Layer> > layer_t;
@@ -63,10 +64,10 @@ Board::createLayers()
 
         // start calculating the minimal board size
 
-	min_x = INFINITY;
-	max_x = -INFINITY;
-	min_y = INFINITY;
-	max_y = -INFINITY;
+	min_x = std::numeric_limits<ivalue_t>::infinity();
+	max_x = -std::numeric_limits<ivalue_t>::infinity();
+	min_y = std::numeric_limits<ivalue_t>::infinity();
+	max_y = -std::numeric_limits<ivalue_t>::infinity();
 
         // calculate room needed by the PCB traces
         for( map< string, prep_t >::iterator it = prepared_layers.begin(); it != prepared_layers.end(); it++ ) {

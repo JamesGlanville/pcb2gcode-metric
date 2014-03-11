@@ -1,7 +1,7 @@
 
 #include "layer.hpp"
 
-Layer::Layer( const string& name, shared_ptr<Surface> surface, shared_ptr<RoutingMill> manufacturer, bool backside, bool mirror_absolute )
+Layer::Layer( const string& name, boost::shared_ptr<Surface> surface, boost::shared_ptr<RoutingMill> manufacturer, bool backside, bool mirror_absolute )
 {
 	this->name = name;
 	this->mirrored = backside;
@@ -13,20 +13,20 @@ Layer::Layer( const string& name, shared_ptr<Surface> surface, shared_ptr<Routin
 #include <iostream>
 using namespace std;
 
-vector< shared_ptr<icoords> >
+vector< boost::shared_ptr<icoords> >
 Layer::get_toolpaths()
 {
 	return surface->get_toolpath( manufacturer, mirrored, mirror_absolute );
 }
 
-shared_ptr<RoutingMill>
+boost::shared_ptr<RoutingMill>
 Layer::get_manufacturer()
 {
 	return manufacturer;
 }
 
 void
-Layer::add_mask( shared_ptr<Layer> mask)
+Layer::add_mask( boost::shared_ptr<Layer> mask)
 {
 	surface->add_mask( mask->surface);
 }

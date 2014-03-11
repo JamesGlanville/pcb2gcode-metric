@@ -50,7 +50,7 @@ class SVG_Exporter
 {
 public:
 	//SVG_Exporter(string filename, const ivalue_t board_width, const ivalue_t board_height);
-	SVG_Exporter( shared_ptr<Board> board );
+	SVG_Exporter( boost::shared_ptr<Board> board );
 	~SVG_Exporter();
 	
 	void create_svg( string filename );
@@ -68,7 +68,7 @@ protected:
 	
 	int dpi;
 	
-	shared_ptr<Board> board;
+	boost::shared_ptr<Board> board;
 	
 	Cairo::RefPtr<Cairo::SvgSurface> cairo_svgsurface;
 	Cairo::RefPtr<Cairo::Context> cr;

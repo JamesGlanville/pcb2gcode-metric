@@ -16,19 +16,19 @@ using std::vector;
 class Layer : boost::noncopyable
 {
 public:
-	Layer( const string& name, shared_ptr<Surface> surface, shared_ptr<RoutingMill> manufacturer, bool backside, bool mirror_absolute );
+	Layer( const string& name, boost::shared_ptr<Surface> surface, boost::shared_ptr<RoutingMill> manufacturer, bool backside, bool mirror_absolute );
 	
-	vector< shared_ptr<icoords> > get_toolpaths();
-	shared_ptr<RoutingMill> get_manufacturer();
+	vector< boost::shared_ptr<icoords> > get_toolpaths();
+	boost::shared_ptr<RoutingMill> get_manufacturer();
 	string get_name() { return name; };
-	void add_mask( shared_ptr<Layer>);
+	void add_mask( boost::shared_ptr<Layer>);
 
 private:
 	string name;
 	bool mirrored;
 	bool mirror_absolute;
-	shared_ptr<Surface> surface;
-	shared_ptr<RoutingMill>    manufacturer;
+	boost::shared_ptr<Surface> surface;
+	boost::shared_ptr<RoutingMill>    manufacturer;
 
 	friend class Board;
 };

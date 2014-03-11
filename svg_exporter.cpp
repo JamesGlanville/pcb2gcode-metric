@@ -20,6 +20,7 @@ using std::endl;
 
 #include <fstream>
 #include <iomanip>
+#include <math.h>
 using namespace std;
 
 
@@ -31,7 +32,7 @@ using std::pair;
 
 
 
-SVG_Exporter::SVG_Exporter( shared_ptr<Board> board )
+SVG_Exporter::SVG_Exporter( boost::shared_ptr<Board> board )
 {
 	this->dpi = 72;
 	this->board = board;

@@ -75,13 +75,13 @@ public:
 	void set_postamble(string);
 	
 	//SVG EXPORTER
-	void set_svg_exporter( shared_ptr<SVG_Exporter> svgexpo );
+	void set_svg_exporter(  boost::shared_ptr<SVG_Exporter> svgexpo );
 
-	void export_ngc( const string of_name, shared_ptr<Driller> target, bool mirrored, bool mirror_absolute );
-	void export_ngc( const string of_name, shared_ptr<Cutter> target, bool mirrored, bool mirror_absolute );
+	void export_ngc( const string of_name,  boost::shared_ptr<Driller> target, bool mirrored, bool mirror_absolute );
+	void export_ngc( const string of_name,  boost::shared_ptr<Cutter> target, bool mirrored, bool mirror_absolute );
 
-	shared_ptr<const map<int,drillbit> > get_bits();
-	shared_ptr<const map<int,icoords> > get_holes();
+	 boost::shared_ptr<const map<int,drillbit> > get_bits();
+	 boost::shared_ptr<const map<int,icoords> > get_holes();
 
 private:
 	void parse_holes();
@@ -90,10 +90,10 @@ private:
 	const ivalue_t board_width;
 	
 	bool bDoSVG;
-	shared_ptr<SVG_Exporter> svgexpo;
+	boost::shared_ptr<SVG_Exporter> svgexpo;
 
-	shared_ptr< map<int,drillbit> > bits;
-	shared_ptr< map<int,icoords> > holes;
+	boost::shared_ptr< map<int,drillbit> > bits;
+	boost::shared_ptr< map<int,icoords> > holes;
 
 	gerbv_project_t* project;
 
@@ -101,7 +101,7 @@ private:
 	string preamble,postamble;
 
 private: //methods
-	void millhole(std::ofstream &of,float x, float y,  shared_ptr<Cutter> cutter,float holediameter);
+	void millhole(std::ofstream &of,float x, float y,   boost::shared_ptr<Cutter> cutter,float holediameter);
 };
 
 

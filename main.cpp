@@ -20,6 +20,8 @@
 
 #include <iostream>
 #include <fstream>
+#include <limits>
+#include <math.h>
 
 using std::cout;
 using std::cerr;
@@ -40,6 +42,7 @@ using Glib::ustring;
 #include "drill.hpp"
 #include "options.hpp"
 #include "svg_exporter.hpp"
+#include "config.h"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
@@ -140,7 +143,7 @@ int main( int argc, char* argv[] )
 		postamble = tmp + "\n\n";
 	}
 
-	shared_ptr<Board> board( new Board( vm["dpi"].as<int>(), vm.count("fill-outline"), vm.count("fill-outline") ? vm["outline-width"].as<double>() * unit : INFINITY ));
+	shared_ptr<Board> board( new Board( vm["dpi"].as<int>(), vm.count("fill-outline"), vm.count("fill-outline") ? vm["outline-width"].as<double>() * unit : std::numeric_limits<double>::infinity() ));
 
 	// this is currently disabled, use --outline instead
 	if( vm.count("margins") )
