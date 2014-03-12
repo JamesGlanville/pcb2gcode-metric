@@ -197,12 +197,15 @@ int main( int argc, char* argv[] )
 		else
 			std::cerr << "Import Error: No reason given.";
 	}
+		cout <<"poop"<<endl;
 
-	
 	//SVG EXPORTER
 	shared_ptr<SVG_Exporter> svgexpo( new SVG_Exporter( board ) );
-	
+		cout <<"poop"<<endl;
+
 	try {
+			cout <<"poop"<<endl;
+
 		board->createLayers();   // throws std::logic_error
 		cout << "Calculated board dimensions: " << board->get_width() << "in x " << board->get_height() << "in" << endl;
 
