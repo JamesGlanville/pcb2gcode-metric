@@ -204,7 +204,7 @@ int main( int argc, char* argv[] )
 		cout <<"poop"<<endl;
 
 	try {
-			cout <<"poop"<<endl;
+			cout <<"poopaoaoao"<<endl;
 
 		board->createLayers();   // throws std::logic_error
 		cout << "Calculated board dimensions: " << board->get_width() << "in x " << board->get_height() << "in" << endl;

@@ -63,12 +63,12 @@ Board::createLayers()
 		throw std::logic_error("No layers prepared.");
 
         // start calculating the minimal board size
-
+	cout<<"blah"<<endl;
 	min_x = std::numeric_limits<ivalue_t>::infinity();
 	max_x = -std::numeric_limits<ivalue_t>::infinity();
 	min_y = std::numeric_limits<ivalue_t>::infinity();
 	max_y = -std::numeric_limits<ivalue_t>::infinity();
-
+	cout <<"blahhhhhh"<<endl;
         // calculate room needed by the PCB traces
         for( map< string, prep_t >::iterator it = prepared_layers.begin(); it != prepared_layers.end(); it++ ) {
                 shared_ptr<LayerImporter> importer = it->second.get<0>();
@@ -82,7 +82,7 @@ Board::createLayers()
                 t = importer->get_max_y();
                 if(max_y < t) max_y = t;
         }
-
+		cout <<"12345"<<endl;
         // if there's no pcb outline, add the specified margins
         try {
 		shared_ptr<RoutingMill> outline_mill = prepared_layers.at("outline").get<1>();
@@ -91,6 +91,7 @@ Board::createLayers()
 		max_x += radius;
 		min_y -= radius;
 		max_y += radius;
+		cout <<"12oaeuau345"<<endl;
         }
 	catch( std::logic_error& e ) {
                 min_x -= margin;
@@ -98,6 +99,7 @@ Board::createLayers()
                 min_y -= margin;
                 max_y += margin;
         }
+			cout <<"123uoeuoeuou45"<<endl;
 
         // board size calculated. create layers
         for( map<string, prep_t>::iterator it = prepared_layers.begin(); it != prepared_layers.end(); it++ ) {
@@ -107,14 +109,19 @@ Board::createLayers()
                 surface->render(importer);
 
 		shared_ptr<Layer> layer( new Layer(it->first, surface, it->second.get<1>(), it->second.get<2>(), it->second.get<3>() ) ); // see comment for prep_t in board.hpp
-                
+             		cout <<"123uoeauoeuaoue45"<<endl;
+   
 		layers.insert( std::make_pair( layer->get_name(), layer ) );
         }
+				cout <<"aa12345"<<endl;
 
         // DEBUG output
-        BOOST_FOREACH( layer_t layer, layers ) {
+   /*     BOOST_FOREACH( layer_t layer, layers ) {
+					cout <<"grumblefuck12345"<<endl;
+
                 layer.second->surface->save_debug_image(string("original_")+layer.second->get_name());
-        }
+        }*/
+				cout <<"aaa12345"<<endl;
 
 	// mask layers with outline
 	if( prepared_layers.find("outline") != prepared_layers.end()) {
@@ -123,6 +130,7 @@ Board::createLayers()
 		if(fill_outline) {
 			outline_layer->surface->fill_outline(outline_width);
 		}
+				cout <<"aaaa12345"<<endl;
 
 		for (map<string, shared_ptr<Layer> >::iterator it = layers.begin(); it != layers.end(); it++ ) {
 			if(it->second != outline_layer) {

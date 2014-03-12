@@ -68,6 +68,7 @@ Surface::Surface( guint dpi, ivalue_t min_x, ivalue_t max_x, ivalue_t min_y, iva
                         PRC(pixels + x*4 + y*stride) = BLACK;
                 }
         }
+		std::cout <<"here"<<endl;
 }
 
 void Surface::render( boost::shared_ptr<LayerImporter> importer ) throw(import_exception)
@@ -203,8 +204,9 @@ Surface::get_toolpath( shared_ptr<RoutingMill> mill, bool mirrored, bool mirror_
 		     << " instead. You may want to check the g-code output and"
 		     << " possibly use a smaller milling width.\n";
 	}
-
-	save_debug_image("traced");
+	cout<<"butts"<<endl;
+	//save_debug_image("traced");
+	cout<<"ghuhoutu"<<endl;
 	return toolpath;
 }
 
