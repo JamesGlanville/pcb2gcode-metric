@@ -20,6 +20,7 @@ using std::endl;
 
 #include <fstream>
 #include <iomanip>
+#define _USE_MATH_DEFINES
 #include <math.h>
 using namespace std;
 

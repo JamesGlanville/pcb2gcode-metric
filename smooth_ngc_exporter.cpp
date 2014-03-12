@@ -26,17 +26,17 @@
 #include <iomanip>
 using namespace std;
 
-SNGC_Exporter::SNGC_Exporter( shared_ptr<Board> board ) : NGC_Exporter(board)
+SNGC_Exporter::SNGC_Exporter( boost::shared_ptr<Board> board ) : NGC_Exporter(board)
 {
 	this->board = board;
 	bDoSVG = false;
 }
 
 void
-SNGC_Exporter::export_layer( shared_ptr<Layer> layer, string of_name )
+SNGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 {
 	string layername = layer->get_name();
-	shared_ptr<RoutingMill> mill = layer->get_manufacturer();
+	boost::shared_ptr<RoutingMill> mill = layer->get_manufacturer();
 
 	bool bSvgOnce = TRUE;
 	
@@ -77,7 +77,7 @@ SNGC_Exporter::export_layer( shared_ptr<Layer> layer, string of_name )
 	
 	
 	// contours
- 	BOOST_FOREACH( shared_ptr<icoords> path, layer->get_toolpaths() )
+ 	BOOST_FOREACH( boost::shared_ptr<icoords> path, layer->get_toolpaths() )
         {
 		// retract, move to the starting point of the next contour
 //		of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
@@ -93,7 +93,7 @@ SNGC_Exporter::export_layer( shared_ptr<Layer> layer, string of_name )
 		/** if we're cutting, perhaps do it in multiple steps, but do isolations just once.
 		 *  i know this is partially repetitive, but this way it's easier to read
 		 */
-		shared_ptr<Cutter> cutter = boost::dynamic_pointer_cast<Cutter>( mill );
+		boost::shared_ptr<Cutter> cutter = boost::dynamic_pointer_cast<Cutter>( mill );
 		if( cutter && cutter->do_steps ) {
 			// cutting
 			double z_step = cutter->stepsize;

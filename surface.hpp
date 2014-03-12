@@ -21,6 +21,8 @@
 #ifndef SURFACE_H
 #define SURFACE_H
 
+#define uint unsigned int
+
 #include <boost/noncopyable.hpp>
 #include <boost/array.hpp>
 #include <boost/shared_ptr.hpp>

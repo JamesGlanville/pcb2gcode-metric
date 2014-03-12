@@ -26,6 +26,7 @@
 #include <vector>
 #include <cmath>
 #include <float.h>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 using namespace std;
 
@@ -50,7 +51,7 @@ public:
 struct Point3f {
     float x, y, z;
     Point3f(float a, float b, float c) : x(a), y(b), z(c) {}
-    bool operator==(const Point3f &rhs) const { return x==rhs.x and y==rhs.y and z==rhs.z; }
+    bool operator==(const Point3f &rhs) const { return x==rhs.x && y==rhs.y && z==rhs.z; }
 };
 
 

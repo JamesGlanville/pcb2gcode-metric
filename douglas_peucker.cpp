@@ -305,9 +305,9 @@ douglas(
     }
 
     bool ccw;
-    if (worst_arc_dist < tolerance and worst_arc_dist < worst_dist) {
+    if (worst_arc_dist < tolerance && worst_arc_dist < worst_dist) {
         ccw = arc_dir(plane, cr, ps, begin[arc_i], pe);
-        if (plane == 18) { ccw = not ccw; } // wtf?
+        if (plane == 18) { ccw = !ccw; } // wtf?
         result->push_back(Move(ps));
         if (ccw) {
             result->push_back(Move(pe).GC("G03").Center(arc_fmt(plane, cr, ps)));
@@ -381,7 +381,7 @@ void Gcode::flush() {
     if (cuts.size()) { // no moves, do nothing
         Point3f ps = cuts.front();
         Point3f pe = cuts.back();
-        if (ps == pe and cuts.size() > 1) { // endpoints are equal and we have multiple moves
+        if (ps == pe && cuts.size() > 1) { // endpoints are equal and we have multiple moves
             // so let's split
             cerr << "flush: Same endpoints, splitting vector length of " << cuts.size() << endl;
             int half = cuts.size() >> 1;
@@ -442,12 +442,12 @@ void Gcode::move_common(Move& move, string gc) {
     y = move.ny ? move.y : m_lasty;
     z = move.nz ? move.z : m_lastz;
 //    if (isnan(x) or isnan(y) or isnan(z)) { cerr << "Gcode::move_common: NaN detected." << endl; }
-    if (!isnan(x) and !isnan(m_lastx) and x != m_lastx) { ss << " X" << x; }
-    if (!isnan(y) and !isnan(m_lasty) and y != m_lasty) { ss << " Y" << y; }
-    if (!isnan(z) and !isnan(m_lastz) and z != m_lastz) { ss << " Z" << z; }
-    if (!isnan(x) and x != m_lastx) { m_lastx = x; }
-    if (!isnan(y) and y != m_lasty) { m_lasty = y; }
-    if (!isnan(z) and z != m_lastz) { m_lastz = z; }
+    if (!boost::math::isnan(x) && !boost::math::isnan(m_lastx) && x != m_lastx) { ss << " X" << x; }
+    if (!boost::math::isnan(y) && !boost::math::isnan(m_lasty) && y != m_lasty) { ss << " Y" << y; }
+    if (!boost::math::isnan(z) && !boost::math::isnan(m_lastz) && z != m_lastz) { ss << " Z" << z; }
+    if (!boost::math::isnan(x) && x != m_lastx) { m_lastx = x; }
+    if (!boost::math::isnan(y) && y != m_lasty) { m_lasty = y; }
+    if (!boost::math::isnan(z) && z != m_lastz) { m_lastz = z; }
     s = ss.str();
     if (s.size()) {
         if (gc != m_lastgc) {
@@ -474,7 +474,7 @@ void Gcode::cut(Move& move) {
     dz = abs(lz - z);
     // if this move is greater than the tolerance size in any direction
     // flush out the previous moves and then add it to the queue.
-    if (dx > m_tolerance or dy > m_tolerance or dz > m_tolerance) {
+    if (dx > m_tolerance || dy > m_tolerance || dz > m_tolerance) {
         flush();
     }
     cuts.push_back(Point3f(x,y,z));
