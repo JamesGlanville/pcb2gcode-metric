@@ -1,0 +1,26 @@
+# this is an example config file for pcb2gcode.
+# place this in the same directory as your gerber files to save typing
+
+metric=1
+
+# You may want to uncomment and change those in local project files
+front=untitled.GTL
+#back=diode_tester-B_Cu.gbl
+#drill=diode_tester.drl
+
+# parameters for isolation routing / engraving / etching
+zwork=10
+zsafe=12
+zchange=15
+mill-feed=30
+mill-speed=30000
+drill-front=1
+
+# drilling parameters
+zdrill=-2
+drill-feed=300
+drill-speed=20000
+
+# generate voronoi regions
+offset=100
+dpi=1000
