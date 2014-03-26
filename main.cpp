@@ -122,6 +122,11 @@ int main( int argc, char* argv[] )
 		paster->pastethickness = vm["pastethickness"].as<double>()*unit;
 		paster->pastespeed = vm["pastespeed"].as<double>()*unit;
 		paster->feed = vm["mill-feed"].as<double>()*unit;
+		paster->initialslack = vm["initialslack"].as<double>()*unit;
+		if (vm.count("retraction_distance"))
+		{
+			paster->retraction_distance = vm["retraction_distance"].as<double>()*unit;
+		}
 	}
 
 	// prepare custom preamble
@@ -277,32 +282,4 @@ int main( int argc, char* argv[] )
 	} else {
 		cout << "No drill file specified.\n";
 	}
-	
-	/*
-	if( vm.count("paste") ) {
-		cout << "Converting " << vm["paste"].as<string>() << "... ";
-		try {
-			PasteProcessor ep( vm["paste"].as<string>(), board->get_min_x() + board->get_max_x() );
-			ep.add_header( PACKAGE_STRING );
-			if( vm.count("preamble") ) ep.set_preamble(preamble);
-			if( vm.count("postamble") ) ep.set_postamble(postamble);
-
-			//SVG EXPORTER
-			if( vm.count("svg") ) ep.set_svg_exporter( svgexpo );
-			
-			
-			if( vm.count("milldrill") )
-				ep.export_ngc( vm["drill-output"].as<string>(), cutter, !vm.count("drill-front"), vm.count("mirror-absolute") );
-			else
-				ep.export_ngc( vm["drill-output"].as<string>(), paster, !vm.count("paste-front"), vm.count("mirror-absolute") );
-
-			cout << "done.\n";
-		} catch( paste_exception& e ) {
-			cout << "ERROR.\n";
-		}
-	} else {
-		cout << "No drill file specified.\n";
-	}*/
-
-
 }

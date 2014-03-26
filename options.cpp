@@ -142,6 +142,8 @@ options::options() : cli_options("command line only options"),
 		("pastethickness", po::value<double>(), "Paste extrusion thickness in mm")
 		("pastewidth", po::value<double>(), "Width of solder extrusion in mm")
 		("pastespeed", po::value<double>(), "Paste extrusion speed in mm/s(???)")
+		("retraction_distance", po::value<double>(), "Retraction distance in mm")
+		("initialslack", po::value<double>(), "Initial slack in the extruder in mm")
 		
 		("svg", po::value<string>(), "SVG output file. EXPERIMENTAL\n")
 	
@@ -303,6 +305,11 @@ static void check_pasting_parameters( po::variables_map const& vm )
 			cerr << "Error: For paste extrusion, a pastespeed (--pastespeed) has to be specified.\n";
 			exit(29);
 		}
+		else if(!vm.count("initialslack"))
+		{
+			cerr << "Error: For paste extrusion, an initial slack value (--initialslack) has to be specified.\n";
+			exit(34);
+		}
 		else
 		{
 			double pastewidth = vm["pastewidth"].as<double>();
@@ -322,6 +329,15 @@ static void check_pasting_parameters( po::variables_map const& vm )
 			{
 				cerr << "Error: Specified pastespeed must be greater than zero!\n";
 				exit(32);
+			}
+			if(vm.count("retraction_distance"))
+			{
+				double retraction_distance = vm["retraction_distance"].as<double>();
+				if (retraction_distance < 0 )
+				{
+					cerr << "Error: Specified pastespeed must not be less than zero!\n";
+					exit(33);
+				}
 			}
 		}
 	}
