@@ -40,7 +40,6 @@ using Glib::ustring;
 #include "smooth_ngc_exporter.hpp"
 #include "board.hpp"
 #include "drill.hpp"
-#include "paste.hpp"
 #include "options.hpp"
 #include "svg_exporter.hpp"
 #include "config.h"

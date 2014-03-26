@@ -50,19 +50,11 @@ void
 NGC_Exporter::export_all(boost::program_options::variables_map& options)
 {
 	BOOST_FOREACH( string layername, board->list_layers() ) {
-			cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
-		cerr << "Current Layer: " << layername << ", exporting to " << "." << endl;
-
 		std::stringstream option_name;
-	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		option_name << layername << "-output";
-	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		string of_name = options[option_name.str()].as<string>();
-	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		cerr << "Current Layer: " << layername << ", exporting to " << of_name << "." << endl;
-	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		export_layer( board->get_layer(layername), of_name);
-	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 	}
 }
 
