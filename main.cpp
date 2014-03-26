@@ -276,7 +276,7 @@ int main( int argc, char* argv[] )
 		cout << "No drill file specified.\n";
 	}
 	
-	
+	/*
 	if( vm.count("paste") ) {
 		cout << "Converting " << vm["paste"].as<string>() << "... ";
 		try {
@@ -289,9 +289,9 @@ int main( int argc, char* argv[] )
 			if( vm.count("svg") ) ep.set_svg_exporter( svgexpo );
 			
 			
-		/*	if( vm.count("milldrill") )
+			if( vm.count("milldrill") )
 				ep.export_ngc( vm["drill-output"].as<string>(), cutter, !vm.count("drill-front"), vm.count("mirror-absolute") );
-			else*/
+			else
 				ep.export_ngc( vm["drill-output"].as<string>(), paster, !vm.count("paste-front"), vm.count("mirror-absolute") );
 
 			cout << "done.\n";
@@ -300,7 +300,7 @@ int main( int argc, char* argv[] )
 		}
 	} else {
 		cout << "No drill file specified.\n";
-	}
+	}*/
 
 
 }
