@@ -141,7 +141,8 @@ options::options() : cli_options("command line only options"),
 
 		("pastethickness", po::value<double>(), "Paste extrusion thickness in mm")
 		("pastewidth", po::value<double>(), "Width of solder extrusion in mm")
-
+		("pastespeed", po::value<double>(), "Paste extrusion speed in mm/s(???)")
+		
 		("svg", po::value<string>(), "SVG output file. EXPERIMENTAL\n")
 	
 		("zwork",    po::value<double>(), "milling depth in inches (Z-coordinate while engraving)")
@@ -297,6 +298,11 @@ static void check_pasting_parameters( po::variables_map const& vm )
 			cerr << "Error: For paste extrusion, a pastethickness (--pastethickness) has to be specified.\n";
 			exit(29);
 		}
+		else if(!vm.count("pastespeed"))
+		{
+			cerr << "Error: For paste extrusion, a pastespeed (--pastespeed) has to be specified.\n";
+			exit(29);
+		}
 		else
 		{
 			double pastewidth = vm["pastewidth"].as<double>();
@@ -310,6 +316,12 @@ static void check_pasting_parameters( po::variables_map const& vm )
 			{
 				cerr << "Error: Specified pastethickness must be greater than zero!\n";
 				exit(31);
+			}
+			double pastespeed = vm["pastespeed"].as<double>();
+			if (pastethickness <= 0 )
+			{
+				cerr << "Error: Specified pastespeed must be greater than zero!\n";
+				exit(32);
 			}
 		}
 	}

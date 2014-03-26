@@ -120,6 +120,8 @@ int main( int argc, char* argv[] )
 		paster = shared_ptr<Paster>( new Paster() );
 		paster->pastewidth = vm["pastewidth"].as<double>()*unit;
 		paster->pastethickness = vm["pastethickness"].as<double>()*unit;
+		paster->pastespeed = vm["pastespeed"].as<double>()*unit;
+		paster->feed = vm["mill-feed"].as<double>()*unit;
 	}
 
 	// prepare custom preamble

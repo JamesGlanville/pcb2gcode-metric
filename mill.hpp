@@ -74,6 +74,7 @@ class Paster : public RoutingMill
 public:
 	double pastewidth;
 	double pastethickness;
+	double pastespeed;
 };
 
 #endif // MILL_H

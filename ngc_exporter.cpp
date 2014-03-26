@@ -23,6 +23,9 @@
 
 #include <iostream>
 #include <iomanip>
+
+#define PI 3.141593
+
 using namespace std;
 
 NGC_Exporter::NGC_Exporter( boost::shared_ptr<Board> board ) : Exporter(board)
@@ -114,15 +117,18 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 
 	if (layername == "paste") 
 	{
-		int pasteextruded = 0;
+		double pasteextruded = 0;
 		of << "G92 E0\n";
 		of << "M82\n"; //Use absolute distances for extrusion.
 		
 		cout << "placeholder, paste" <<endl;
 		BOOST_FOREACH( boost::shared_ptr<icoords> path, layer->get_toolpaths() )
 		{
+			boost::shared_ptr<Paster> paster = boost::dynamic_pointer_cast<Paster>( mill );
+
 			of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
-			of << "G00 Z" << CONVERT_UNITS(mill->zsafe) << " ( retract )\n" << endl;
+			//of << "G00 Z" << CONVERT_UNITS(mill->zsafe) << " ( retract )\n" << endl;
+			of << "G1 Z" << CONVERT_UNITS(mill->zwork + paster->pastethickness) <<  endl;
 			//of << "G00 X" << CONVERT_UNITS(path->begin()->first) << " Y" << CONVERT_UNITS(path->begin()->second) << " ( rapid move to begin. )\n";
 
 			icoords::iterator iter = path->begin();
@@ -138,8 +144,6 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 				svgexpo->move_to(path->begin()->first, path->begin()->second);
 				bSvgOnce = TRUE;
 			}			
-
-			boost::shared_ptr<Paster> paster = boost::dynamic_pointer_cast<Paster>( mill );
 
 			while( iter != path->end() ) {
 				peek = iter + 1;
@@ -174,6 +178,11 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 					abs(paste_corners.at(3).second - paste_corners.at(0).second + paste_corners.at(3).first - paste_corners.at(0).first);
 			center = pair<ivalue_t,ivalue_t>((paste_corners.at(0).first + paste_corners.at(2).first)/2,(paste_corners.at(0).second + paste_corners.at(1).second)/2);
 			cout << "Blob of paste of area = " <<area << " at center X= " <<center.first << " Y= " <<center.second<<endl;
+			pasteextruded+=(area*CONVERT_UNITS(paster->pastethickness)/(M_PI*(pow(CONVERT_UNITS(paster->pastewidth)/2,2))));
+			cout << "pasteextruded" << pasteextruded <<"pastethickness"<<CONVERT_UNITS(paster->pastethickness)<<endl;
+			
+			of << "G1 F" << CONVERT_UNITS(paster->feed) << " X" << center.first << " Y" <<center.second << endl;
+			of << "G1 F" << CONVERT_UNITS(paster->pastespeed) << " E" << pasteextruded << endl;
 
 			//SVG EXPORTER
 			if (bDoSVG) {
