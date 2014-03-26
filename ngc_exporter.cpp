@@ -112,33 +112,142 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 	
     cout << "exporting_layer";
 
-
-	// contours
- 	BOOST_FOREACH( boost::shared_ptr<icoords> path, layer->get_toolpaths() )
-        {
-		// retract, move to the starting point of the next contour
-		of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
-        of << "G00 Z" << CONVERT_UNITS(mill->zsafe) << " ( retract )\n" << endl;
-                of << "G00 X" << CONVERT_UNITS(path->begin()->first) << " Y" << CONVERT_UNITS(path->begin()->second) << " ( rapid move to begin. )\n";
+	if (layername == "paste") 
+	{
+		int pasteextruded = 0;
+		of << "G92 E0\n";
+		of << "M82\n"; //Use absolute distances for extrusion.
 		
-			
-		//SVG EXPORTER
-		if (bDoSVG) {						
-			svgexpo->move_to(path->begin()->first, path->begin()->second);
-			bSvgOnce = TRUE;
-		}
-			
-		/** if we're cutting, perhaps do it in multiple steps, but do isolations just once.
-		 *  i know this is partially repetitive, but this way it's easier to read
-		 */
-		boost::shared_ptr<Cutter> cutter = boost::dynamic_pointer_cast<Cutter>( mill );
-		if( cutter && cutter->do_steps ) {
-			// cutting
-			double z_step = cutter->stepsize;
-			double z = mill->zwork + z_step * abs( int( mill->zwork / z_step ) );
+		cout << "placeholder, paste" <<endl;
+		BOOST_FOREACH( boost::shared_ptr<icoords> path, layer->get_toolpaths() )
+		{
+			of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
+			of << "G00 Z" << CONVERT_UNITS(mill->zsafe) << " ( retract )\n" << endl;
+			//of << "G00 X" << CONVERT_UNITS(path->begin()->first) << " Y" << CONVERT_UNITS(path->begin()->second) << " ( rapid move to begin. )\n";
 
-			while( z >= mill->zwork ) {
-				of << "G01 Z" << CONVERT_UNITS(z) << " F" << CONVERT_UNITS(mill->feed) << " ( plunge. )\n";
+			icoords::iterator iter = path->begin();
+			icoords::iterator last = path->end(); // initializing to quick & dirty sentinel value
+			icoords::iterator peek;
+
+			icoords paste_corners;
+			icoordpair center;
+			ivalue_t area;
+				
+			//SVG EXPORTER
+			if (bDoSVG) {						
+				svgexpo->move_to(path->begin()->first, path->begin()->second);
+				bSvgOnce = TRUE;
+			}			
+
+			boost::shared_ptr<Paster> paster = boost::dynamic_pointer_cast<Paster>( mill );
+
+			while( iter != path->end() ) {
+				peek = iter + 1;
+				if( /* it's necessary to write the coordinates if... */
+						last == path->end() || /* it's the beginning */
+						peek == path->end() || /* it's the end */
+						!( /* or if neither of the axis align */
+							( last->first == iter->first && iter->first == peek->first ) || /* x axis aligns */
+							( last->second == iter->second && iter->second == peek->second ) /* y axis aligns */
+						)
+						/* no need to check for "they are on one axis but iter is outside of last and peek" becaus that's impossible from how they are generated */
+				  ) {
+					  paste_corners.push_back(pair<ivalue_t,ivalue_t>(CONVERT_UNITS(iter->first),CONVERT_UNITS(iter->second)));
+//					of << "G01 X" << CONVERT_UNITS(iter->first) << " Y" << CONVERT_UNITS(iter->second) << " F" << CONVERT_UNITS(mill->feed) << endl;
+					
+					//SVG EXPORTER
+					if (bDoSVG) if (bSvgOnce) {svgexpo->line_to(iter->first, iter->second);}
+					}
+				last = iter;
+				++iter;
+			}	
+			
+		/*	cout << "BEGIN SHAPE"<<endl;
+			BOOST_FOREACH(icoordpair corner, paste_corners)
+			{
+				cout << "Corner here: X=" << corner.first << " Y=" <<corner.second << endl;
+			}
+			cout << "END SHAPE" <<endl;*/
+				
+			cout << "ASSUMING RECTANGULAR PAD!!" <<endl;
+			area = abs(paste_corners.at(0).first - paste_corners.at(1).first + paste_corners.at(0).second - paste_corners.at(1).second) * 
+					abs(paste_corners.at(3).second - paste_corners.at(0).second + paste_corners.at(3).first - paste_corners.at(0).first);
+			center = pair<ivalue_t,ivalue_t>((paste_corners.at(0).first + paste_corners.at(2).first)/2,(paste_corners.at(0).second + paste_corners.at(1).second)/2);
+			cout << "Blob of paste of area = " <<area << " at center X= " <<center.first << " Y= " <<center.second<<endl;
+
+			//SVG EXPORTER
+			if (bDoSVG) {
+				svgexpo->close_path();
+				bSvgOnce = FALSE;
+			}
+		}
+	}
+	
+	else
+	{
+		// contours
+		BOOST_FOREACH( boost::shared_ptr<icoords> path, layer->get_toolpaths() )
+			{
+			// retract, move to the starting point of the next contour
+			of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
+			of << "G00 Z" << CONVERT_UNITS(mill->zsafe) << " ( retract )\n" << endl;
+					of << "G00 X" << CONVERT_UNITS(path->begin()->first) << " Y" << CONVERT_UNITS(path->begin()->second) << " ( rapid move to begin. )\n";
+			
+				
+			//SVG EXPORTER
+			if (bDoSVG) {						
+				svgexpo->move_to(path->begin()->first, path->begin()->second);
+				bSvgOnce = TRUE;
+			}
+				
+			/** if we're cutting, perhaps do it in multiple steps, but do isolations just once.
+			 *  i know this is partially repetitive, but this way it's easier to read
+			 */
+			boost::shared_ptr<Cutter> cutter = boost::dynamic_pointer_cast<Cutter>( mill );
+			if( cutter && cutter->do_steps ) {
+				// cutting
+				double z_step = cutter->stepsize;
+				double z = mill->zwork + z_step * abs( int( mill->zwork / z_step ) );
+
+				while( z >= mill->zwork ) {
+					of << "G01 Z" << CONVERT_UNITS(z) << " F" << CONVERT_UNITS(mill->feed) << " ( plunge. )\n";
+					of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
+
+					icoords::iterator iter = path->begin();
+					icoords::iterator last = path->end(); // initializing to quick & dirty sentinel value
+					icoords::iterator peek;
+					while( iter != path->end() ) {
+						peek = iter + 1;
+						if( /* it's necessary to write the coordinates if... */
+								last == path->end() || /* it's the beginning */
+								peek == path->end() || /* it's the end */
+								!( /* or if neither of the axis align */
+									( last->first == iter->first && iter->first == peek->first ) || /* x axis aligns */
+									( last->second == iter->second && iter->second == peek->second ) /* y axis aligns */
+								)
+								/* no need to check for "they are on one axis but iter is outside of last and peek" becaus that's impossible from how they are generated */
+						  ) {
+							of << "G01 X" << CONVERT_UNITS(iter->first) << " Y" << CONVERT_UNITS(iter->second) << " F" << CONVERT_UNITS(mill->feed) << endl;
+							
+							//SVG EXPORTER
+							if (bDoSVG) {
+								if (bSvgOnce) svgexpo->line_to(iter->first, iter->second);
+							}
+						}
+						last = iter;
+						++iter;
+					}
+					//SVG EXPORTER
+					if (bDoSVG) {
+						svgexpo->close_path();
+						bSvgOnce = FALSE;
+					}
+				
+					z -= z_step;
+				}
+			} else {
+				// isolating
+				of << "G01 Z" << CONVERT_UNITS(mill->zwork) << " F" << CONVERT_UNITS(mill->feed) << " ( plunge. )\n";
 				of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
 
 				icoords::iterator iter = path->begin();
@@ -158,9 +267,8 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 						of << "G01 X" << CONVERT_UNITS(iter->first) << " Y" << CONVERT_UNITS(iter->second) << " F" << CONVERT_UNITS(mill->feed) << endl;
 						
 						//SVG EXPORTER
-						if (bDoSVG) {
-							if (bSvgOnce) svgexpo->line_to(iter->first, iter->second);
-						}
+						if (bDoSVG) if (bSvgOnce) svgexpo->line_to(iter->first, iter->second);
+
 					}
 					last = iter;
 					++iter;
@@ -170,49 +278,9 @@ NGC_Exporter::export_layer( boost::shared_ptr<Layer> layer, string of_name )
 					svgexpo->close_path();
 					bSvgOnce = FALSE;
 				}
-			
-				z -= z_step;
+			}			
 			}
-		} else {
-			// isolating
-			of << "G01 Z" << CONVERT_UNITS(mill->zwork) << " F" << CONVERT_UNITS(mill->feed) << " ( plunge. )\n";
-			of << "G04 P0 ( dwell for no time -- G64 should not smooth over this point )\n";
-
-			icoords::iterator iter = path->begin();
-			icoords::iterator last = path->end(); // initializing to quick & dirty sentinel value
-			icoords::iterator peek;
-			while( iter != path->end() ) {
-				peek = iter + 1;
-				if( /* it's necessary to write the coordinates if... */
-						last == path->end() || /* it's the beginning */
-						peek == path->end() || /* it's the end */
-						!( /* or if neither of the axis align */
-							( last->first == iter->first && iter->first == peek->first ) || /* x axis aligns */
-							( last->second == iter->second && iter->second == peek->second ) /* y axis aligns */
-						)
-						/* no need to check for "they are on one axis but iter is outside of last and peek" becaus that's impossible from how they are generated */
-				  ) {
-					of << "G01 X" << CONVERT_UNITS(iter->first) << " Y" << CONVERT_UNITS(iter->second) << " F" << CONVERT_UNITS(mill->feed) << endl;
-					
-					//SVG EXPORTER
-					if (bDoSVG) if (bSvgOnce) svgexpo->line_to(iter->first, iter->second);
-
-				}
-				last = iter;
-				++iter;
-			}
-			//SVG EXPORTER
-			if (bDoSVG) {
-				svgexpo->close_path();
-				bSvgOnce = FALSE;
-			}
-
 		}
-
-
-		
-        }
-
         of << endl;
 
 	// retract, end

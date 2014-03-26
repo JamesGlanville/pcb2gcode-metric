@@ -118,11 +118,8 @@ int main( int argc, char* argv[] )
 	shared_ptr<Paster> paster;
 	if( vm.count("paste") ) {
 		paster = shared_ptr<Paster>( new Paster() );
-		/*driller->zwork = vm["zdrill"].as<double>()*unit;
-		driller->zsafe = vm["zsafe"].as<double>()*unit;
-		driller->feed = vm["drill-feed"].as<double>()*unit;
-		driller->speed = vm["drill-speed"].as<int>();
-		driller->zchange = vm["zchange"].as<double>()*unit;*/
+		paster->pastewidth = vm["pastewidth"].as<double>()*unit;
+		paster->pastethickness = vm["pastethickness"].as<double>()*unit;
 	}
 
 	// prepare custom preamble

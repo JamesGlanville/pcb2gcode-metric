@@ -139,6 +139,9 @@ options::options() : cli_options("command line only options"),
 		("drill", po::value<string>(), "Excellon drill file")
 		("paste", po::value<string>(), "top paste RS274-X .gtp\n")
 
+		("pastethickness", po::value<double>(), "Paste extrusion thickness in mm")
+		("pastewidth", po::value<double>(), "Width of solder extrusion in mm")
+
 		("svg", po::value<string>(), "SVG output file. EXPERIMENTAL\n")
 	
 		("zwork",    po::value<double>(), "milling depth in inches (Z-coordinate while engraving)")
@@ -282,8 +285,34 @@ static void check_drilling_parameters( po::variables_map const& vm )
 
 static void check_pasting_parameters( po::variables_map const& vm )
 {
-	if( vm.count("paste") ) {
-}
+	if( vm.count("paste") )
+	{
+		if(!vm.count("pastewidth"))
+		{
+			cerr << "Error: For paste extrusion, a pastewidth (--pastewidth) has to be specified.\n";
+			exit(28);
+		}
+		else if(!vm.count("pastethickness"))
+		{
+			cerr << "Error: For paste extrusion, a pastethickness (--pastethickness) has to be specified.\n";
+			exit(29);
+		}
+		else
+		{
+			double pastewidth = vm["pastewidth"].as<double>();
+			if (pastewidth <= 0)
+			{
+				cerr << "Error: Specified pastewidth must be greater than zero!\n";
+				exit(30);
+			}
+			double pastethickness = vm["pastethickness"].as<double>();
+			if (pastethickness <= 0 )
+			{
+				cerr << "Error: Specified pastethickness must be greater than zero!\n";
+				exit(31);
+			}
+		}
+	}
 }
 
 static void check_cutting_parameters( po::variables_map const& vm )

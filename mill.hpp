@@ -71,6 +71,9 @@ class Driller : public Mill
 
 class Paster : public RoutingMill
 {
+public:
+	double pastewidth;
+	double pastethickness;
 };
 
 #endif // MILL_H
