@@ -77,13 +77,15 @@ options::parse( int argc, char** argv )
 	string back_output="--back-output="+basename+"back.ngc";
 	string outline_output="--outline-output="+basename+"outline.ngc";
 	string drill_output="--drill-output="+basename+"drill.ngc";
+	string paste_output="--paste-output="+basename+"paste.ngc";
 
 	const char *fake_basename_command_line[] = {
 		"",
 		front_output.c_str(),
 		back_output.c_str(),
 		outline_output.c_str(),
-		drill_output.c_str()
+		drill_output.c_str(),
+		paste_output.c_str()
 	};
 
 	po::store(po::parse_command_line(5, (char**)fake_basename_command_line, generic, style), instance().vm);
@@ -134,7 +136,8 @@ options::options() : cli_options("command line only options"),
 		("front",      po::value<string>(), "front side RS274-X .gbr")
 		("back",   po::value<string>(), "back side RS274-X .gbr")
 		("outline",  po::value<string>(), "pcb outline polygon RS274-X .gbr")
-		("drill", po::value<string>(), "Excellon drill file\n")
+		("drill", po::value<string>(), "Excellon drill file")
+		("paste", po::value<string>(), "top paste RS274-X .gtp\n")
 
 		("svg", po::value<string>(), "SVG output file. EXPERIMENTAL\n")
 	
@@ -169,7 +172,8 @@ options::options() : cli_options("command line only options"),
 		("front-output", po::value<string>()->default_value("front.ngc"), "output file for front layer")
 		("back-output", po::value<string>()->default_value("back.ngc"), "output file for back layer")
 		("outline-output", po::value<string>()->default_value("outline.ngc"), "output file for outline")
-		("drill-output", po::value<string>()->default_value("drill.ngc"), "output file for drilling\n")
+		("drill-output", po::value<string>()->default_value("drill.ngc"), "output file for drilling")
+		("paste-output", po::value<string>()->default_value("paste.ngc"), "output file for pasting\n")
 
 		("preamble",      po::value<string>(), "gcode preamble file")
 		("postamble",      po::value<string>(), "gcode postamble file")
@@ -276,6 +280,12 @@ static void check_drilling_parameters( po::variables_map const& vm )
 	}
 }
 
+static void check_pasting_parameters( po::variables_map const& vm )
+{
+	if( vm.count("paste") ) {
+}
+}
+
 static void check_cutting_parameters( po::variables_map const& vm )
 {
 	if( vm.count("outline") || (vm.count("drill") && vm.count("milldrill"))) {
@@ -352,6 +362,7 @@ void options::check_parameters()
 		check_milling_parameters( vm );
 		check_cutting_parameters( vm );
 		check_drilling_parameters( vm );
+		check_pasting_parameters( vm );
 	} catch ( std::runtime_error& re ) {
 		cerr << "Error: Invalid parameter. :-(\n";
 		exit(100);

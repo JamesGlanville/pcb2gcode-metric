@@ -69,4 +69,8 @@ class Driller : public Mill
 {
 };
 
+class Paster : public RoutingMill
+{
+};
+
 #endif // MILL_H

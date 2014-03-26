@@ -40,6 +40,7 @@ using Glib::ustring;
 #include "smooth_ngc_exporter.hpp"
 #include "board.hpp"
 #include "drill.hpp"
+#include "paste.hpp"
 #include "options.hpp"
 #include "svg_exporter.hpp"
 #include "config.h"
@@ -113,6 +114,16 @@ int main( int argc, char* argv[] )
 		driller->feed = vm["drill-feed"].as<double>()*unit;
 		driller->speed = vm["drill-speed"].as<int>();
 		driller->zchange = vm["zchange"].as<double>()*unit;
+	}
+	
+	shared_ptr<Paster> paster;
+	if( vm.count("paste") ) {
+		paster = shared_ptr<Paster>( new Paster() );
+		/*driller->zwork = vm["zdrill"].as<double>()*unit;
+		driller->zsafe = vm["zsafe"].as<double>()*unit;
+		driller->feed = vm["drill-feed"].as<double>()*unit;
+		driller->speed = vm["drill-speed"].as<int>();
+		driller->zchange = vm["zchange"].as<double>()*unit;*/
 	}
 
 	// prepare custom preamble
@@ -188,6 +199,18 @@ int main( int argc, char* argv[] )
 		} catch( boost::exception& e ) {
 			cout << "not specified\n";
 		}
+		
+		cout << "Importing front paste... ";
+		try {
+			string frontpastefile = vm["frontpaste"].as<string>();
+			boost::shared_ptr<LayerImporter> importer( new GerberImporter(frontpastefile) );
+			board->prepareLayer( "frontpaste", importer, paster, false, vm.count("mirror-absolute") ); //JJJ should false be true???
+			cout << "done\n";
+		} catch( import_exception& i ) {
+			cout << "error\n";
+		} catch( boost::exception& e ) {
+			cout << "not specified\n";
+		}
 
 	}
 	catch(import_exception ie)
@@ -197,14 +220,11 @@ int main( int argc, char* argv[] )
 		else
 			std::cerr << "Import Error: No reason given.";
 	}
-		cout <<"poop"<<endl;
 
 	//SVG EXPORTER
 	shared_ptr<SVG_Exporter> svgexpo( new SVG_Exporter( board ) );
-		cout <<"poop"<<endl;
 
 	try {
-			cout <<"poop"<<endl;
 
 		board->createLayers();   // throws std::logic_error
 		cout << "Calculated board dimensions: " << board->get_width() << "in x " << board->get_height() << "in" << endl;
@@ -250,6 +270,32 @@ int main( int argc, char* argv[] )
 
 			cout << "done.\n";
 		} catch( drill_exception& e ) {
+			cout << "ERROR.\n";
+		}
+	} else {
+		cout << "No drill file specified.\n";
+	}
+	
+	
+	if( vm.count("paste") ) {
+		cout << "Converting " << vm["paste"].as<string>() << "... ";
+		try {
+			PasteProcessor ep( vm["paste"].as<string>(), board->get_min_x() + board->get_max_x() );
+			ep.add_header( PACKAGE_STRING );
+			if( vm.count("preamble") ) ep.set_preamble(preamble);
+			if( vm.count("postamble") ) ep.set_postamble(postamble);
+
+			//SVG EXPORTER
+			if( vm.count("svg") ) ep.set_svg_exporter( svgexpo );
+			
+			
+		/*	if( vm.count("milldrill") )
+				ep.export_ngc( vm["drill-output"].as<string>(), cutter, !vm.count("drill-front"), vm.count("mirror-absolute") );
+			else*/
+				ep.export_ngc( vm["drill-output"].as<string>(), paster, !vm.count("paste-front"), vm.count("mirror-absolute") );
+
+			cout << "done.\n";
+		} catch( paste_exception& e ) {
 			cout << "ERROR.\n";
 		}
 	} else {
