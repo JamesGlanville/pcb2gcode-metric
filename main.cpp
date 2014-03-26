@@ -202,9 +202,9 @@ int main( int argc, char* argv[] )
 		
 		cout << "Importing front paste... ";
 		try {
-			string frontpastefile = vm["frontpaste"].as<string>();
+			string frontpastefile = vm["paste"].as<string>();
 			boost::shared_ptr<LayerImporter> importer( new GerberImporter(frontpastefile) );
-			board->prepareLayer( "frontpaste", importer, paster, false, vm.count("mirror-absolute") ); //JJJ should false be true???
+			board->prepareLayer( "paste", importer, paster, false, vm.count("mirror-absolute") ); //JJJ should false be true???
 			cout << "done\n";
 		} catch( import_exception& i ) {
 			cout << "error\n";
@@ -237,15 +237,25 @@ int main( int argc, char* argv[] )
 		}
 		
         if( vm.count("smooth") ) { cout << "Enabling Douglas-Peucker smoothing algorithm." << endl; }
+        	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
+
 		shared_ptr<NGC_Exporter> exporter( vm.count("smooth") ? new SNGC_Exporter( board ) : new NGC_Exporter( board ) );
+	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
+
 		exporter->add_header( PACKAGE_STRING );
+			cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
+
 		if( vm.count("preamble") ) exporter->set_preamble(preamble);
 		if( vm.count("postamble") ) exporter->set_postamble(postamble);
+	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		
 		//SVG EXPORTER
 		if( vm.count("svg") ) exporter->set_svg_exporter( svgexpo );
+	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
 		
 		exporter->export_all(vm);
+	cout << "FILE: " << __FILE__ << " LINE: " << __LINE__ << endl;
+
 	} catch( std::logic_error& le ) {
 		cout << "Internal Error: " << le.what() << endl;
 	} catch( std::runtime_error& re ) {

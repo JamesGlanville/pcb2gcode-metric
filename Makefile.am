@@ -10,8 +10,6 @@ pcb2gcode_SOURCES = \
 	coord.hpp \
 	drill.hpp \
 	drill.cpp \
-	paste.hpp \
-	paste.cpp \
 	exporter.hpp \
 	Fixed.hpp \
 	gerberimporter.hpp \
