@@ -44,6 +44,8 @@ using Glib::ustring;
 #include "svg_exporter.hpp"
 #include "config.h"
 
+#include "pnp.hpp"
+
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
@@ -78,6 +80,11 @@ int main( int argc, char* argv[] )
 	}
 	options::check_parameters();
 
+	shared_ptr<PnpData> pnpdata;
+	if (vm.count("pnp"))
+	{
+		pnpdata = shared_ptr<PnpData>(new PnpData());
+	}
 
 	// prepare environment
 	shared_ptr<Isolator> isolator;
@@ -208,6 +215,17 @@ int main( int argc, char* argv[] )
 			string frontpastefile = vm["paste"].as<string>();
 			boost::shared_ptr<LayerImporter> importer( new GerberImporter(frontpastefile) );
 			board->prepareLayer( "paste", importer, paster, false, vm.count("mirror-absolute") ); //JJJ should false be true???
+			cout << "done\n";
+		} catch( import_exception& i ) {
+			cout << "error\n";
+		} catch( boost::exception& e ) {
+			cout << "not specified\n";
+		}
+
+		cout << "Importing pick and place... ";
+		try {
+			string pnpfile = vm["pnp"].as<string>();
+			pnpdata->loadfile(pnpfile);
 			cout << "done\n";
 		} catch( import_exception& i ) {
 			cout << "error\n";

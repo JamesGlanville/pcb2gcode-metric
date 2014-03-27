@@ -1,0 +1,13 @@
+### Module positions - created on 27/03/2014 02:05:27 ###
+### Printed by Pcbnew version pcbnew (2013-07-07 BZR 4022)-stable
+## Unit = mm, Angle = deg.
+## Side : F.Cu
+# Ref    Val                  Package         PosX       PosY        Rot     Side
+U1       LM317AEMP        SOT223             -8.8900    -2.5400       0.0    F.Cu
+IC1      ATMEGA328P-A     TQFP32              3.8100    -2.5400       0.0    F.Cu
+U1       LM317AEMP        SOT223             -8.8900    -2.5400       0.0    F.Cu
+U1       LM317AEMP        SOT223             -8.8900    -2.5400       0.0    F.Cu
+U1       LM317AEMP        SOT223             -8.8900    -2.5400       0.0    F.Cu
+U1       LM317AEMP        SOT223             -8.8900    -2.5400       0.0    F.Cu
+## End
+

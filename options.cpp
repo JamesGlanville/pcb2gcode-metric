@@ -137,7 +137,8 @@ options::options() : cli_options("command line only options"),
 		("back",   po::value<string>(), "back side RS274-X .gbr")
 		("outline",  po::value<string>(), "pcb outline polygon RS274-X .gbr")
 		("drill", po::value<string>(), "Excellon drill file")
-		("paste", po::value<string>(), "top paste RS274-X .gtp\n")
+		("paste", po::value<string>(), "top paste RS274-X .gtp")
+		("pnp", po::value<string>(), "Pick and place .pos file\n")
 
 		("pastethickness", po::value<double>(), "Paste extrusion thickness in mm")
 		("pastewidth", po::value<double>(), "Width of solder extrusion in mm")
@@ -343,6 +344,13 @@ static void check_pasting_parameters( po::variables_map const& vm )
 	}
 }
 
+static void check_pnp_parameters( po::variables_map const& vm )
+{
+	if( vm.count("pnp") )
+	{
+	}
+}
+
 static void check_cutting_parameters( po::variables_map const& vm )
 {
 	if( vm.count("outline") || (vm.count("drill") && vm.count("milldrill"))) {
@@ -420,6 +428,7 @@ void options::check_parameters()
 		check_cutting_parameters( vm );
 		check_drilling_parameters( vm );
 		check_pasting_parameters( vm );
+		check_pnp_parameters( vm );
 	} catch ( std::runtime_error& re ) {
 		cerr << "Error: Invalid parameter. :-(\n";
 		exit(100);
