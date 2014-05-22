@@ -8,6 +8,8 @@ pcb2gcode_SOURCES = \
 	board.hpp \
 	board.cpp \
 	coord.hpp \
+	pnp.hpp \
+	pnp.cpp \
 	drill.hpp \
 	drill.cpp \
 	exporter.hpp \

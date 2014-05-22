@@ -1,0 +1,43 @@
+# this is an example config file for pcb2gcode.
+# place this in the same directory as your gerber files to save typing
+
+metric=1
+
+# You may want to uncomment and change those in local project files
+front=untitled.GTL
+back=untitled.GBL
+drill=untitled.TXT
+# outline=untitled.GBR
+paste=untitled.GTP
+pnp=atmega328.pos
+
+#parameters for pasting boards
+pastewidth=1
+pastethickness=0.5
+pastespeed=1
+retraction_distance=5
+initialslack=10
+
+# parameters for cutting out boards
+cutter-diameter=0.03937
+zcut=-0.08
+cut-feed=3
+cut-speed=20000
+cut-infeed=0.1
+
+# parameters for isolation routing / engraving / etching
+zwork=10
+zsafe=12
+zchange=15
+mill-feed=30
+mill-speed=30000
+drill-front=1
+
+# drilling parameters
+zdrill=-2
+drill-feed=300
+drill-speed=20000
+
+# generate voronoi regions
+offset=100
+dpi=1000

@@ -1,0 +1,120 @@
+( pcb2gcode 1.1.4 )
+
+       G21     ( Units == MM.                 )
+G90     ( Absolute coordinates.        )
+S0  ( RPM spindle speed.           )
+M3      ( Spindle on clockwise.        )
+
+G64 P0.00500 ( set maximum deviation from commanded toolpath )
+
+G92 E0
+M82
+G1 F1.00000 E10.00000
+G92 E0
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E-4.15227
+G1 F30.00000 X7.78510 Y17.32280
+G1 F1.00000 E0.84773
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E-3.30454
+G1 F30.00000 X9.05510 Y17.32280
+G1 F1.00000 E1.69546
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E-2.45681
+G1 F30.00000 X10.32510 Y17.32280
+G1 F1.00000 E2.54319
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E-1.60908
+G1 F30.00000 X11.59510 Y17.32280
+G1 F1.00000 E3.39092
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E-0.76135
+G1 F30.00000 X12.86510 Y17.32280
+G1 F1.00000 E4.23865
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E0.08638
+G1 F30.00000 X14.13510 Y17.32280
+G1 F1.00000 E5.08638
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E0.93411
+G1 F30.00000 X15.40510 Y17.32280
+G1 F1.00000 E5.93411
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E1.78184
+G1 F30.00000 X16.67510 Y17.32280
+G1 F1.00000 E6.78184
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E2.62956
+G1 F30.00000 X17.94510 Y17.32280
+G1 F1.00000 E7.62956
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E3.47729
+G1 F30.00000 X19.21510 Y17.32280
+G1 F1.00000 E8.47729
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E4.32502
+G1 F30.00000 X7.78510 Y7.74700
+G1 F1.00000 E9.32502
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E5.17275
+G1 F30.00000 X9.05510 Y7.74700
+G1 F1.00000 E10.17275
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E6.02048
+G1 F30.00000 X10.32510 Y7.74700
+G1 F1.00000 E11.02048
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E6.86821
+G1 F30.00000 X11.59510 Y7.74700
+G1 F1.00000 E11.86821
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E7.71594
+G1 F30.00000 X12.86510 Y7.74700
+G1 F1.00000 E12.71594
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E8.56367
+G1 F30.00000 X14.13510 Y7.74700
+G1 F1.00000 E13.56367
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E9.41140
+G1 F30.00000 X15.40510 Y7.74700
+G1 F1.00000 E14.41140
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E10.25913
+G1 F30.00000 X16.67510 Y7.74700
+G1 F1.00000 E15.25913
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E11.10686
+G1 F30.00000 X17.94510 Y7.72160
+G1 F1.00000 E16.10686
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G1 Z0.50000
+G1 F1.00000 E11.95459
+G1 F30.00000 X19.21510 Y7.72160
+G1 F1.00000 E16.95459
+
+G04 P0 ( dwell for no time -- G64 should not smooth over this point )
+G00 Z0.00000 ( retract )
+
+M9 ( Coolant off. )
+M2 ( Program end. )
+

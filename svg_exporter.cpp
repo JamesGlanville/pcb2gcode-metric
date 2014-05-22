@@ -35,8 +35,6 @@ using std::pair;
 
 SVG_Exporter::SVG_Exporter( boost::shared_ptr<Board> board )
 {
-		cout <<"poop2"<<endl;
-
 	this->dpi = 72;
 	this->board = board;
 }

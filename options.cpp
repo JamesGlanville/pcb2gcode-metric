@@ -77,13 +77,15 @@ options::parse( int argc, char** argv )
 	string back_output="--back-output="+basename+"back.ngc";
 	string outline_output="--outline-output="+basename+"outline.ngc";
 	string drill_output="--drill-output="+basename+"drill.ngc";
+	string paste_output="--paste-output="+basename+"paste.ngc";
 
 	const char *fake_basename_command_line[] = {
 		"",
 		front_output.c_str(),
 		back_output.c_str(),
 		outline_output.c_str(),
-		drill_output.c_str()
+		drill_output.c_str(),
+		paste_output.c_str()
 	};
 
 	po::store(po::parse_command_line(5, (char**)fake_basename_command_line, generic, style), instance().vm);
@@ -134,8 +136,16 @@ options::options() : cli_options("command line only options"),
 		("front",      po::value<string>(), "front side RS274-X .gbr")
 		("back",   po::value<string>(), "back side RS274-X .gbr")
 		("outline",  po::value<string>(), "pcb outline polygon RS274-X .gbr")
-		("drill", po::value<string>(), "Excellon drill file\n")
+		("drill", po::value<string>(), "Excellon drill file")
+		("paste", po::value<string>(), "top paste RS274-X .gtp")
+		("pnp", po::value<string>(), "Pick and place .pos file\n")
 
+		("pastethickness", po::value<double>(), "Paste extrusion thickness in mm")
+		("pastewidth", po::value<double>(), "Width of solder extrusion in mm")
+		("pastespeed", po::value<double>(), "Paste extrusion speed in mm/s(???)")
+		("retraction_distance", po::value<double>(), "Retraction distance in mm")
+		("initialslack", po::value<double>(), "Initial slack in the extruder in mm")
+		
 		("svg", po::value<string>(), "SVG output file. EXPERIMENTAL\n")
 	
 		("zwork",    po::value<double>(), "milling depth in inches (Z-coordinate while engraving)")
@@ -169,7 +179,8 @@ options::options() : cli_options("command line only options"),
 		("front-output", po::value<string>()->default_value("front.ngc"), "output file for front layer")
 		("back-output", po::value<string>()->default_value("back.ngc"), "output file for back layer")
 		("outline-output", po::value<string>()->default_value("outline.ngc"), "output file for outline")
-		("drill-output", po::value<string>()->default_value("drill.ngc"), "output file for drilling\n")
+		("drill-output", po::value<string>()->default_value("drill.ngc"), "output file for drilling")
+		("paste-output", po::value<string>()->default_value("paste.ngc"), "output file for pasting\n")
 
 		("preamble",      po::value<string>(), "gcode preamble file")
 		("postamble",      po::value<string>(), "gcode postamble file")
@@ -276,6 +287,70 @@ static void check_drilling_parameters( po::variables_map const& vm )
 	}
 }
 
+static void check_pasting_parameters( po::variables_map const& vm )
+{
+	if( vm.count("paste") )
+	{
+		if(!vm.count("pastewidth"))
+		{
+			cerr << "Error: For paste extrusion, a pastewidth (--pastewidth) has to be specified.\n";
+			exit(28);
+		}
+		else if(!vm.count("pastethickness"))
+		{
+			cerr << "Error: For paste extrusion, a pastethickness (--pastethickness) has to be specified.\n";
+			exit(29);
+		}
+		else if(!vm.count("pastespeed"))
+		{
+			cerr << "Error: For paste extrusion, a pastespeed (--pastespeed) has to be specified.\n";
+			exit(29);
+		}
+		else if(!vm.count("initialslack"))
+		{
+			cerr << "Error: For paste extrusion, an initial slack value (--initialslack) has to be specified.\n";
+			exit(34);
+		}
+		else
+		{
+			double pastewidth = vm["pastewidth"].as<double>();
+			if (pastewidth <= 0)
+			{
+				cerr << "Error: Specified pastewidth must be greater than zero!\n";
+				exit(30);
+			}
+			double pastethickness = vm["pastethickness"].as<double>();
+			if (pastethickness <= 0 )
+			{
+				cerr << "Error: Specified pastethickness must be greater than zero!\n";
+				exit(31);
+			}
+			double pastespeed = vm["pastespeed"].as<double>();
+			if (pastethickness <= 0 )
+			{
+				cerr << "Error: Specified pastespeed must be greater than zero!\n";
+				exit(32);
+			}
+			if(vm.count("retraction_distance"))
+			{
+				double retraction_distance = vm["retraction_distance"].as<double>();
+				if (retraction_distance < 0 )
+				{
+					cerr << "Error: Specified pastespeed must not be less than zero!\n";
+					exit(33);
+				}
+			}
+		}
+	}
+}
+
+static void check_pnp_parameters( po::variables_map const& vm )
+{
+	if( vm.count("pnp") )
+	{
+	}
+}
+
 static void check_cutting_parameters( po::variables_map const& vm )
 {
 	if( vm.count("outline") || (vm.count("drill") && vm.count("milldrill"))) {
@@ -352,6 +427,8 @@ void options::check_parameters()
 		check_milling_parameters( vm );
 		check_cutting_parameters( vm );
 		check_drilling_parameters( vm );
+		check_pasting_parameters( vm );
+		check_pnp_parameters( vm );
 	} catch ( std::runtime_error& re ) {
 		cerr << "Error: Invalid parameter. :-(\n";
 		exit(100);

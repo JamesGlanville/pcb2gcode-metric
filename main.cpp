@@ -44,6 +44,8 @@ using Glib::ustring;
 #include "svg_exporter.hpp"
 #include "config.h"
 
+#include "pnp.hpp"
+
 #include <boost/shared_ptr.hpp>
 #include <boost/foreach.hpp>
 
@@ -78,6 +80,11 @@ int main( int argc, char* argv[] )
 	}
 	options::check_parameters();
 
+	shared_ptr<PnpData> pnpdata;
+	if (vm.count("pnp"))
+	{
+		pnpdata = shared_ptr<PnpData>(new PnpData());
+	}
 
 	// prepare environment
 	shared_ptr<Isolator> isolator;
@@ -113,6 +120,20 @@ int main( int argc, char* argv[] )
 		driller->feed = vm["drill-feed"].as<double>()*unit;
 		driller->speed = vm["drill-speed"].as<int>();
 		driller->zchange = vm["zchange"].as<double>()*unit;
+	}
+	
+	shared_ptr<Paster> paster;
+	if( vm.count("paste") ) {
+		paster = shared_ptr<Paster>( new Paster() );
+		paster->pastewidth = vm["pastewidth"].as<double>()*unit;
+		paster->pastethickness = vm["pastethickness"].as<double>()*unit;
+		paster->pastespeed = vm["pastespeed"].as<double>()*unit;
+		paster->feed = vm["mill-feed"].as<double>()*unit;
+		paster->initialslack = vm["initialslack"].as<double>()*unit;
+		if (vm.count("retraction_distance"))
+		{
+			paster->retraction_distance = vm["retraction_distance"].as<double>()*unit;
+		}
 	}
 
 	// prepare custom preamble
@@ -188,6 +209,29 @@ int main( int argc, char* argv[] )
 		} catch( boost::exception& e ) {
 			cout << "not specified\n";
 		}
+		
+		cout << "Importing front paste... ";
+		try {
+			string frontpastefile = vm["paste"].as<string>();
+			boost::shared_ptr<LayerImporter> importer( new GerberImporter(frontpastefile) );
+			board->prepareLayer( "paste", importer, paster, false, vm.count("mirror-absolute") ); //JJJ should false be true???
+			cout << "done\n";
+		} catch( import_exception& i ) {
+			cout << "error\n";
+		} catch( boost::exception& e ) {
+			cout << "not specified\n";
+		}
+
+		cout << "Importing pick and place... ";
+		try {
+			string pnpfile = vm["pnp"].as<string>();
+			pnpdata->loadfile(pnpfile);
+			cout << "done\n";
+		} catch( import_exception& i ) {
+			cout << "error\n";
+		} catch( boost::exception& e ) {
+			cout << "not specified\n";
+		}
 
 	}
 	catch(import_exception ie)
@@ -197,14 +241,15 @@ int main( int argc, char* argv[] )
 		else
 			std::cerr << "Import Error: No reason given.";
 	}
-		cout <<"poop"<<endl;
 
 	//SVG EXPORTER
 	shared_ptr<SVG_Exporter> svgexpo( new SVG_Exporter( board ) );
-		cout <<"poop"<<endl;
 
 	try {
+<<<<<<< HEAD
 			cout <<"poopaoaoao"<<endl;
+=======
+>>>>>>> 2812693621456378487ff118620d0d99b9baae2a
 
 		board->createLayers();   // throws std::logic_error
 		cout << "Calculated board dimensions: " << board->get_width() << "in x " << board->get_height() << "in" << endl;
@@ -217,8 +262,11 @@ int main( int argc, char* argv[] )
 		}
 		
         if( vm.count("smooth") ) { cout << "Enabling Douglas-Peucker smoothing algorithm." << endl; }
+
 		shared_ptr<NGC_Exporter> exporter( vm.count("smooth") ? new SNGC_Exporter( board ) : new NGC_Exporter( board ) );
+
 		exporter->add_header( PACKAGE_STRING );
+
 		if( vm.count("preamble") ) exporter->set_preamble(preamble);
 		if( vm.count("postamble") ) exporter->set_postamble(postamble);
 		
@@ -226,6 +274,7 @@ int main( int argc, char* argv[] )
 		if( vm.count("svg") ) exporter->set_svg_exporter( svgexpo );
 		
 		exporter->export_all(vm);
+
 	} catch( std::logic_error& le ) {
 		cout << "Internal Error: " << le.what() << endl;
 	} catch( std::runtime_error& re ) {
@@ -255,6 +304,4 @@ int main( int argc, char* argv[] )
 	} else {
 		cout << "No drill file specified.\n";
 	}
-
-
 }
